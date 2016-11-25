@@ -1,11 +1,14 @@
 <?php
+session_start();
+
 $INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 
 include ($INC_DIR . 'model/image_db.php');
 
-/*** some basic sanity checks ***/
-if(filter_has_var(INPUT_GET, "image_id") !== false && filter_input(INPUT_GET, 'image_id', FILTER_VALIDATE_INT) !== false)
-{
+if (!isset($_SESSION['is_auth_user'])) {
+	$error_message = 'This is not allowed';
+	include ($INC_DIR . 'view/denial.php');
+} elseif(filter_has_var(INPUT_GET, "image_id") !== false && filter_input(INPUT_GET, 'image_id', FILTER_VALIDATE_INT) !== false) {
 	/*** assign the image id ***/
 	$image_id = filter_input(INPUT_GET, "image_id", FILTER_SANITIZE_NUMBER_INT);
 	$which = filter_input(INPUT_GET,"which", FILTER_SANITIZE_STRING);
@@ -23,7 +26,6 @@ if(filter_has_var(INPUT_GET, "image_id") !== false && filter_input(INPUT_GET, 'i
 	echo $the_data[$which];
 	}
 }
-
 else
 {
 	echo 'Please use a real id number';
