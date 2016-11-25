@@ -33,5 +33,6 @@ foreach($thumb_metadata as $array) {
 }
 echo '<p> <a href="?action=logout">Logout</a></p>';
 ?>
+<p><a href="view/upload.html">Upload</a></p>
 </body>
 </html>
