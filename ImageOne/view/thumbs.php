@@ -26,7 +26,7 @@ div.thumb p {
 $thumb_metadata = thumb_list();
 foreach($thumb_metadata as $array) {
 	echo '<div class="thumb" style="width: '.$array['thumb_width'].'px; height: '.$array['thumb_height'].'px;">
-            <p><a href="view/show_image.php?image_id='.$array['image_id'].'&which=image'.'">
+            <p><a href="view/image_page.php?image_id='.$array['image_id'].'&which=image'.'">
             <img src="view/show_image.php?image_id='.$array['image_id'].'&which=image_thumb" alt="'.$array['image_name'].' /">
             </a></p>
             <p>'.$array['image_name'].'</p></div>';

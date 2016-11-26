@@ -13,18 +13,18 @@ if (!isset($_SESSION['is_auth_user'])) {
 	$image_id = filter_input(INPUT_GET, "image_id", FILTER_SANITIZE_NUMBER_INT);
 	$which = filter_input(INPUT_GET,"which", FILTER_SANITIZE_STRING);
 	
-	if (false) {
-		echo $which;
-	} else {
-	
     $the_data = get_image($image_id,$which);
 	
 	/*** set the headers and display the image ***/
 	header("Content-type: ".$the_data['image_type']);
 
+	if ($which == 'image7') {
+		echo 'Roo';
+	}
+	
 	/*** output the image ***/
 	echo $the_data[$which];
-	}
+	
 }
 else
 {
