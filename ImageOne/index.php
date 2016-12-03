@@ -19,6 +19,16 @@ if (!isset($_SESSION['is_auth_user'])) {
 if ($action == 'logout') {
 	logout();
 	header("Location: .");
+} elseif ($action == 'choose_upload') {
+	unset ($_FILES['userfile']);
+	include ('view/upload.php');
+} elseif ($action == 'submit_upload') {
+	if (!empty($_FILES['userfile']['name'])) {
+		header ("Location: .");
+	} else {
+		$error_message = 'You must select a file';
+		include ('view/error.php');
+	}
 } elseif ($action == 'login') {
 	$username = filter_input(INPUT_POST, 'username');
 	$password = filter_input(INPUT_POST, 'password');

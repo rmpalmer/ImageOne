@@ -1,27 +1,12 @@
-<?php
-$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
+<?php include ('header.php');?>
 
-require ($INC_DIR . 'model/image_db.php');
-/*** check if a file was submitted ***/
-if(!isset($_FILES['userfile']))
-{
-	echo '<p>Please select a file</p>';
-}
-else
-{
-	try {
-		upload();
-		/*** give praise and thanks to the php gods ***/
-		echo '<p>Thank you for submitting</p>';
-	}
-	catch(PDOException $e)
-	{
-		echo '<h4>'.$e->getMessage().'</h4>';
-	}
-	catch(Exception $e)
-	{
-		echo '<h4>'.$e->getMessage().'</h4>';
-	}
-}
+<form method="post" action="index.php" enctype="multipart/form-data">
+Select Image File:
+<input type="file" name="userfile"  size="40">
+<input type="hidden" name="MAX_FILE_SIZE" value="10000000">
+<input type="hidden" name="action" value="submit_upload">
+<br />
+<input type="submit" value="Store">
+</form>
 
-?>
+<?php include ('footer.php');?>

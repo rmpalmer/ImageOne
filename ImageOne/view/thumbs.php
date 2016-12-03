@@ -9,6 +9,7 @@
 <?php endforeach;?>
 
 <p><a href="?action=logout">Logout</a></p>
-<p><a href="view/upload.html">Upload</a></p>
+<p><a href="view/upload.html">Old Upload</a></p>
+<p><a href="?action=choose_upload">Upload</a></p>
 
 <?php include 'footer.php'?>
