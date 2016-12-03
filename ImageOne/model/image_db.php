@@ -85,7 +85,7 @@ function upload(){
 }
 function get_image($image_id,$which) {
 	global $db;
-	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/OneImage/";
+	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 	try    {
 		/*** The sql statement ***/
 		$sql = "SELECT " . $which . ", image_type FROM testblob WHERE image_id=:image_id";
@@ -126,7 +126,7 @@ function get_image($image_id,$which) {
 
 function thumb_list() {
 	global $db;
-	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/OneImage/";
+	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 	try    {
 
 		/*** The sql statement ***/
