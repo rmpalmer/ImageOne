@@ -2,7 +2,7 @@
 $INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 
 include_once($INC_DIR . 'model/database.php');
-function upload(){
+function upload($keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
 	if(is_uploaded_file($_FILES['userfile']['tmp_name']) && getimagesize($_FILES['userfile']['tmp_name']) != false)
@@ -18,6 +18,7 @@ function upload(){
 		$image_size   = $size[3];
 		$image_name   = $_FILES['userfile']['name'];
 		$maxsize      = 99999999;
+		$hash_value   = hash_file('md5',$_FILES['userfile']['tmp_name']);
 
 		/***  check the file is less than the maximum file size ***/
 		if($_FILES['userfile']['size'] < $maxsize )
@@ -54,22 +55,26 @@ function upload(){
 
 			/*** clean up a little ***/
 			ob_end_clean();
-
-			/*** prepare the sql ***/
-			$stmt = $db->prepare("INSERT INTO testblob (image_type ,image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name)
-        VALUES (? ,?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bindParam(1, $image_type);
-			$stmt->bindParam(2, $imgfp, PDO::PARAM_LOB);
-			$stmt->bindParam(3, $image_height, PDO::PARAM_INT);
-			$stmt->bindParam(4, $image_width,  PDO::PARAM_INT);
-			$stmt->bindParam(5, $image_thumb,  PDO::PARAM_LOB);
-			$stmt->bindParam(6, $thumb_height, PDO::PARAM_INT);
-			$stmt->bindParam(7, $thumb_width,  PDO::PARAM_INT);
-			$stmt->bindParam(8, $image_name);
+			
+			$query = <<<EOQ
+INSERT INTO testblob (image_type , image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name)
+		    VALUES   (:image_type,:image,:image_height,:image_width,:image_thumb,:thumb_height,:thumb_width,:image_name)
+EOQ;
+			
+			$stmt = $db->prepare($query);
+			
+			$stmt->bindValue(':image_type',$image_type,PDO::PARAM_STR);
+			$stmt->bindValue(':image',$imgfp, PDO::PARAM_LOB);
+			$stmt->bindValue(':image_height',$image_height,PDO::PARAM_INT);
+			$stmt->bindValue(':image_width',$image_width,PDO::PARAM_INT);
+			$stmt->bindValue(':image_thumb',$image_thumb, PDO::PARAM_LOB);
+			$stmt->bindValue(':thumb_height',$thumb_height,PDO::PARAM_INT);
+			$stmt->bindValue(':thumb_width',$thumb_width,PDO::PARAM_INT);
+			$stmt->bindValue(':image_name',$image_name,PDO::PARAM_STR);
 
 			/*** execute the query ***/
 			$stmt->execute();
-
+			
 		}
 		else
 		{
