@@ -41,6 +41,11 @@ if ($action == 'logout') {
 		$login_message = 'You must log in';
 		include ('view/login.php');
 	}
+} elseif ($action == 'update_keywords') {
+	$image_id = filter_input(INPUT_POST,'image_id',FILTER_VALIDATE_INT);
+	$keywords = trim(filter_input(INPUT_POST,'keywords',FILTER_SANITIZE_STRING));
+	update_keywords($image_id,$keywords);
+	header("Location: .");
 } elseif ($action == 'show_image') {
 	$image_id = filter_input(INPUT_GET,'image_id',FILTER_VALIDATE_INT);
 	if ($image_id == false) {

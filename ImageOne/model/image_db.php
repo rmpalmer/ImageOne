@@ -26,8 +26,6 @@ function add_keyword($keyword) {
 	}
 }
 
-
-
 function upload($keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
@@ -227,5 +225,54 @@ function thumb_list() {
 		$error_message = $e->getMessage();
 		include ($INC_DIR . 'model/database_error.php');
 	}
+}
+function update_keywords($image_id,$keywords) {
+	global $db;
+	
+	// first get a list of existing keywords
+	$query_1 = 'SELECT word from keywords join describes
+				on describes.keywords_idkeywords=keywords.idkeywords
+			    where describes.images_image_id = :image_id';
+	$statement_1 = $db->prepare($query_1);
+	$statement_1->bindValue(':image_id',$image_id,PDO::PARAM_INT);
+	$statement_1->execute();
+	$old_keyword_array = $statement_1->fetchAll(PDO::FETCH_COLUMN);
+	$statement_1->closeCursor();
+	$new_keyword_array = explode(" ",$keywords);
+	
+	// find changes to be made
+	$to_add = array_diff($new_keyword_array,$old_keyword_array);
+	$to_remove = array_diff($old_keyword_array,$new_keyword_array);
+	
+	// remove words no longer in the list
+	if (count($to_remove) > 0) {
+		$query_2 = 'DELETE d from describes as d join keywords as k on d.keywords_idkeywords = k.idkeywords
+				where k.word=:word and d.images_image_id=:image_id';
+		$statement_2 = $db->prepare($query_2);
+		$statement_2->bindValue(':image_id',$image_id,PDO::PARAM_INT);
+		foreach ($to_remove as $removeit) {
+			$statement_2->bindValue(':word', $removeit,PDO::PARAM_STR);
+			$statement_2->execute();
+		}
+		$statement_2->closeCursor();
+	}
+	
+	// add new ones
+	if (count($to_add) > 0) {
+		$query_3 = 'INSERT INTO describes
+					(images_image_id,keywords_idkeywords)
+					select image_id,idkeywords from images inner join keywords
+					where image_id=:image_id and word=:word';
+		$statement_3 = $db->prepare($query_3);
+		$statement_3->bindValue(':image_id', $image_id, PDO::PARAM_INT);
+		foreach ($to_add as $addit) {
+			if (!empty($addit)) {
+				add_keyword($addit);
+				$statement_3->bindValue(':word', $addit, PDO::PARAM_STR);
+				$statement_3->execute();
+			}
+		}
+		$statement_3->closeCursor();
+	}	
 }
 ?>
