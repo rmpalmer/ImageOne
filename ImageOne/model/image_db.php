@@ -2,6 +2,32 @@
 $INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 
 include_once($INC_DIR . 'model/database.php');
+
+function add_keyword($keyword) {
+	global $db;
+
+	if (is_null($keyword)) {
+		return;
+	}
+	$query_1 = 'SELECT idkeywords FROM keywords where word = :word';
+	$statement_1 = $db->prepare($query_1);
+	$statement_1->bindValue(':word', $keyword);
+	$statement_1->execute();
+	$old_id = $statement_1->fetchAll();
+	$statement_1->closeCursor();
+
+	$errors = array_filter($old_id);
+	if (empty($errors)) {
+		$query_2 = 'INSERT INTO keywords (word) VALUES (:word)';
+		$statement_2 = $db->prepare($query_2);
+		$statement_2->bindValue(':word', strtolower($keyword));
+		$statement_2->execute();
+		$statement_2->closeCursor();
+	}
+}
+
+
+
 function upload($keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
@@ -57,8 +83,8 @@ function upload($keywords){
 			ob_end_clean();
 			
 			$query = <<<EOQ
-INSERT INTO testblob (image_type , image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name)
-		    VALUES   (:image_type,:image,:image_height,:image_width,:image_thumb,:thumb_height,:thumb_width,:image_name)
+INSERT INTO images (image_type , image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name, hash)
+		    VALUES   (:image_type,:image,:image_height,:image_width,:image_thumb,:thumb_height,:thumb_width,:image_name,:hash)
 EOQ;
 			
 			$stmt = $db->prepare($query);
@@ -71,9 +97,31 @@ EOQ;
 			$stmt->bindValue(':thumb_height',$thumb_height,PDO::PARAM_INT);
 			$stmt->bindValue(':thumb_width',$thumb_width,PDO::PARAM_INT);
 			$stmt->bindValue(':image_name',$image_name,PDO::PARAM_STR);
+			$stmt->bindValue(':hash',$hash_value,PDO::PARAM_STR);
 
 			/*** execute the query ***/
 			$stmt->execute();
+			$stmt->closeCursor();
+			
+			$image_id = $db->lastInsertId();
+			
+			if (!is_null($keywords)) {
+				$keys = explode(" ", $keywords);
+				foreach ($keys as $word) {
+					add_keyword($word);
+					$query_2 = 'INSERT INTO describes
+					(images_image_id,keywords_idkeywords)
+					select image_id,idkeywords from images inner join keywords
+					where image_id=:image_id and word=:word';
+					$statement_2 = $db->prepare($query_2);
+					$statement_2->bindValue(':image_id', $image_id, PDO::PARAM_INT);
+					$statement_2->bindValue(':word', $word, PDO::PARAM_STR);
+					$statement_2->execute();
+					$statement_2->debugDumpParams();
+						
+					$statement_2->closeCursor();
+				}
+			}			
 			
 		}
 		else
@@ -93,7 +141,7 @@ function get_image($image_id,$which) {
 	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 	try    {
 		/*** The sql statement ***/
-		$sql = "SELECT " . $which . ", image_type FROM testblob WHERE image_id=:image_id";
+		$sql = "SELECT " . $which . ", image_type FROM images WHERE image_id=:image_id";
 		
 		/*** prepare the sql ***/
 		$stmt = $db->prepare($sql);
@@ -135,7 +183,7 @@ function thumb_list() {
 	try    {
 
 		/*** The sql statement ***/
-		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM testblob";
+		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images";
 
 		/*** prepare the sql ***/
 		$stmt = $db->prepare($query);
