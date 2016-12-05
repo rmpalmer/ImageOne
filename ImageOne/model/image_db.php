@@ -136,6 +136,24 @@ EOQ;
 		throw new Exception("Unsupported Image Format!");
 	}
 }
+function get_keywords($image_id) {
+	global $db;
+	
+	$query = 'SELECT word from keywords join describes
+				on describes.keywords_idkeywords=keywords.idkeywords
+			    where describes.images_image_id = :image_id';
+	$statement = $db->prepare($query);
+	$statement->bindValue(':image_id', $image_id);
+	$statement->execute();
+	$keyword_array = $statement->fetchAll(PDO::FETCH_COLUMN);
+	
+	$keyword_as_string = '';
+	foreach ($keyword_array as $word) {
+		$keyword_as_string .= ($word . ' ');
+	}
+	return $keyword_as_string;
+
+}
 function get_image($image_id,$which) {
 	global $db;
 	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
@@ -163,6 +181,7 @@ function get_image($image_id,$which) {
 		if(sizeof($array) <> 2)	{
 			throw new Exception("Out of bounds Error");
 		}
+				
 		return ($array);
 	}
 	catch(PDOException $e)
