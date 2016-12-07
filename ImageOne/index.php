@@ -46,7 +46,9 @@ if ($action == 'logout') {
 	$keywords = trim(filter_input(INPUT_POST,'keywords',FILTER_SANITIZE_STRING));
 	update_keywords($image_id,$keywords);
 	header("Location: .");
-} elseif ($action = 'delete_image') {
+} elseif ($action == 'delete_image') {
+	$image_id = filter_input(INPUT_POST,'image_id',FILTER_VALIDATE_INT);
+	delete_image($image_id);
 	header("Location: .");
 } elseif ($action == 'show_image') {
 	$image_id = filter_input(INPUT_GET,'image_id',FILTER_VALIDATE_INT);

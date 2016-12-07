@@ -26,6 +26,26 @@ function add_keyword($keyword) {
 	}
 }
 
+function delete_image($image_id) {
+	global $db;
+	
+	// first remove any entries about keywords describing this note.
+	$query_1 = 'DELETE d from describes as d join images as i on d.images_image_id=i.image_id
+                            where i.image_id=:image_id';
+	$statement_1 = $db->prepare($query_1);
+	$statement_1->bindValue(':image_id', $image_id,PDO::PARAM_INT);
+	$statement_1->execute();
+	$statement_1->closeCursor();
+	
+	// only then can I remove the note itself
+	$query_2 = 'DELETE FROM images where image_id = :image_id';
+	$statement_2 = $db->prepare($query_2);
+	$statement_2->bindValue(':image_id', $image_id);
+	$statement_2->execute();
+	$statement_2->closeCursor();
+	
+}
+
 function upload($keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
