@@ -25,8 +25,14 @@ if ($action == 'logout') {
 } elseif ($action == 'submit_upload') {
 	if (!empty($_FILES['userfile']['name'])) {
 		$keywords = filter_input(INPUT_POST,'keywords');
-		upload($keywords);
-		header ("Location: .");
+		try {
+			upload($keywords);
+			header("Location: .");
+		}
+		catch (Exception $e) { 
+			$error_message = $e->getMessage();
+			include ("view/error.php");
+		}
 	} else {
 		$error_message = 'You must select a file';
 		include ('view/error.php');

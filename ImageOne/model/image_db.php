@@ -101,8 +101,8 @@ function upload($keywords){
 			ob_end_clean();
 			
 			$query = <<<EOQ
-INSERT INTO images (image_type , image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name, hash)
-		    VALUES   (:image_type,:image,:image_height,:image_width,:image_thumb,:thumb_height,:thumb_width,:image_name,:hash)
+INSERT INTO images (image_type , image, image_height, image_width, image_thumb, thumb_height, thumb_width, image_name, hash, filesize)
+		    VALUES   (:image_type,:image,:image_height,:image_width,:image_thumb,:thumb_height,:thumb_width,:image_name,:hash,:filesize)
 EOQ;
 			
 			$stmt = $db->prepare($query);
@@ -116,6 +116,7 @@ EOQ;
 			$stmt->bindValue(':thumb_width',$thumb_width,PDO::PARAM_INT);
 			$stmt->bindValue(':image_name',$image_name,PDO::PARAM_STR);
 			$stmt->bindValue(':hash',$hash_value,PDO::PARAM_STR);
+			$stmt->bindValue(':filesize',$_FILES['userfile']['size'],PDO::PARAM_INT);
 
 			/*** execute the query ***/
 			$stmt->execute();
