@@ -74,6 +74,11 @@ function upload($keywords){
 
 		/*** assign our variables ***/
 		$image_type   = $size['mime'];
+		
+		if ($image_type <> IMAGETYPE_JPEG) {
+			throw new Exception('JPEG is the only supported format');
+		}
+		
 		$imgfp        = fopen($_FILES['userfile']['tmp_name'], 'rb');
 		$image_width  = $size[0];
 		$image_height = $size[1];
