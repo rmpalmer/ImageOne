@@ -46,6 +46,24 @@ function delete_image($image_id) {
 	
 }
 
+function check_existing($filesize,$hash) {
+	global $db;
+	
+	$query = 'SELECT image_name from images where hash=:hash and filesize=:filesize';
+	$statement = $db->prepare($query);
+	$statement->bindValue(':hash',$hash,PDO::PARAM_STR);
+	$statement->bindValue(':filesize',$filesize,PDO::PARAM_INT);
+	$statement->execute();
+	$array = $statement->fetch();
+	$statement->closeCursor();
+	
+	if ($array) {
+		return $array['image_name'];
+	} else {
+		return NULL;
+	}
+}
+
 function upload($keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
@@ -67,6 +85,11 @@ function upload($keywords){
 		/***  check the file is less than the maximum file size ***/
 		if($_FILES['userfile']['size'] < $maxsize )
 		{
+			$old_name = check_existing($_FILES['userfile']['size'], $hash_value);
+			if ($old_name <> NULL) {
+				throw new Exception('file appears to already be stored: [' . $old_name . ']');
+			}
+			
 			/*** create a second variable for the thumbnail ***/
 			$thumb_data = $_FILES['userfile']['tmp_name'];
 
