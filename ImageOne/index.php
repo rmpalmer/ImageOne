@@ -33,7 +33,6 @@ if ($action == 'logout') {
 				$imageName   = $_FILES['userfiles']['name'][$i];
 				$fileSize    = $_FILES['userfiles']['size'][$i];
 				if ($tmpFilePath != "") {
-					$foo = getimagesize($tmpFilePath);
 					upload($imageName,$tmpFilePath,$fileSize,$keywords);
 				}
 			}
