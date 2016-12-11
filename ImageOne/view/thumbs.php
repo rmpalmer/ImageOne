@@ -9,5 +9,6 @@
 <?php endforeach;?>
 <p><a href="?action=logout">Logout</a></p>
 <p><a href="?action=choose_upload">Upload</a></p>
+<p><a href="?action=thumbnails">Refresh</a></p>
 
 <?php include 'footer.php'?>
