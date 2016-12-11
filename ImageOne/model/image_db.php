@@ -1,7 +1,12 @@
 <?php
-$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 
-include_once($INC_DIR . 'model/database.php');
+if (isset($_SERVER['DOCUMENT_ROOT'])) {
+	$INC_BASE = $_SERVER['DOCUMENT_ROOT'];
+	if ($INC_BASE <> NULL) {
+		$INC_DIR = $INC_BASE . "/ImageOne/";
+	    include_once($INC_DIR . 'model/database.php');
+	}
+}
 
 function add_keyword($keyword) {
 	global $db;
