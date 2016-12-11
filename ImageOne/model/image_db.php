@@ -64,39 +64,34 @@ function check_existing($filesize,$hash) {
 	}
 }
 
-function upload($keywords){
+function upload($imageName,$tmpFilePath,$fileSize,$keywords){
 	global $db;
 	/*** check if a file was uploaded ***/
-	if(is_uploaded_file($_FILES['userfile']['tmp_name']) && getimagesize($_FILES['userfile']['tmp_name']) != false)
+	if(true)
 	{
 		/***  get the image info. ***/
-		$size = getimagesize($_FILES['userfile']['tmp_name']);
+		$size = getimagesize($tmpFilePath);
 
 		/*** assign our variables ***/
 		$image_type   = $size['mime'];
 		
-		if ($image_type <> IMAGETYPE_JPEG) {
-			throw new Exception('JPEG is the only supported format');
-		}
-		
-		$imgfp        = fopen($_FILES['userfile']['tmp_name'], 'rb');
+		$imgfp        = fopen($tmpFilePath, 'rb');
 		$image_width  = $size[0];
 		$image_height = $size[1];
 		$image_size   = $size[3];
-		$image_name   = $_FILES['userfile']['name'];
 		$maxsize      = 99999999;
-		$hash_value   = hash_file('md5',$_FILES['userfile']['tmp_name']);
+		$hash_value   = hash_file('md5',$tmpFilePath);
 
 		/***  check the file is less than the maximum file size ***/
-		if($_FILES['userfile']['size'] < $maxsize )
+		if($fileSize < $maxsize )
 		{
-			$old_name = check_existing($_FILES['userfile']['size'], $hash_value);
+			$old_name = check_existing($fileSize, $hash_value);
 			if ($old_name <> NULL) {
 				throw new Exception('file appears to already be stored: [' . $old_name . ']');
 			}
 			
 			/*** create a second variable for the thumbnail ***/
-			$thumb_data = $_FILES['userfile']['tmp_name'];
+			$thumb_data = $tmpFilePath;
 
 			/*** get the aspect ratio (height / width) ***/
 			$aspectRatio=(float)($size[0] / $size[1]);
@@ -142,9 +137,9 @@ EOQ;
 			$stmt->bindValue(':image_thumb',$image_thumb, PDO::PARAM_LOB);
 			$stmt->bindValue(':thumb_height',$thumb_height,PDO::PARAM_INT);
 			$stmt->bindValue(':thumb_width',$thumb_width,PDO::PARAM_INT);
-			$stmt->bindValue(':image_name',$image_name,PDO::PARAM_STR);
+			$stmt->bindValue(':image_name',$imageName,PDO::PARAM_STR);
 			$stmt->bindValue(':hash',$hash_value,PDO::PARAM_STR);
-			$stmt->bindValue(':filesize',$_FILES['userfile']['size'],PDO::PARAM_INT);
+			$stmt->bindValue(':filesize',$fileSize,PDO::PARAM_INT);
 
 			/*** execute the query ***/
 			$stmt->execute();

@@ -23,15 +23,25 @@ if ($action == 'logout') {
 	unset ($_FILES['userfile']);
 	include ('view/upload.php');
 } elseif ($action == 'submit_upload') {
-	if (!empty($_FILES['userfile']['name'])) {
-		$keywords = filter_input(INPUT_POST,'keywords');
+	$num_to_upload = count($_FILES['userfiles']['name']);
+	$keywords = filter_input(INPUT_POST,'keywords');
+	if ($num_to_upload > 0) {
 		try {
-			upload($keywords);
+			for ($i = 0; $i<$num_to_upload; $i++) {
+				
+				$tmpFilePath = $_FILES['userfiles']['tmp_name'][$i];
+				$imageName   = $_FILES['userfiles']['name'][$i];
+				$fileSize    = $_FILES['userfiles']['size'][$i];
+				if ($tmpFilePath != "") {
+					$foo = getimagesize($tmpFilePath);
+					upload($imageName,$tmpFilePath,$fileSize,$keywords);
+				}
+			}
 			header("Location: .");
 		}
-		catch (Exception $e) { 
+		catch (Exception $e) {
 			$error_message = $e->getMessage();
-			include ("view/error.php");
+			include("view/error.php");
 		}
 	} else {
 		$error_message = 'You must select a file';
