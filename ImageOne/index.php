@@ -3,6 +3,7 @@ session_start();
 include_once('model/database.php');
 include_once('model/auth_db.php');
 include_once('model/image_db.php');
+include_once('util/session.php');
 
 $action = filter_input(INPUT_POST,'action');
 if ($action == NULL) {
@@ -76,6 +77,18 @@ if ($action == 'logout') {
 		include ('view/image_page.php');
 	}
 } elseif ($action == 'thumbnails') {
+	$thumb_metadata = thumb_list();
+	include ('view/thumbs.php');
+} elseif ($action == 'reset') {
+	default_limits(true);
+	$thumb_metadata = thumb_list();
+	include ('view/thumbs.php');
+} elseif ($action == 'next') {
+	page_down();
+	$thumb_metadata = thumb_list();
+	include ('view/thumbs.php');
+} elseif ($action == 'prev') {
+	page_up();
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');
 } else {

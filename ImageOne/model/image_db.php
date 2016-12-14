@@ -5,6 +5,7 @@ if (isset($_SERVER['DOCUMENT_ROOT'])) {
 	if ($INC_BASE <> NULL) {
 		$INC_DIR = $INC_BASE . "/ImageOne/";
 	    include_once($INC_DIR . 'model/database.php');
+	    include_once($INC_DIR . 'util/session.php');
 	}
 }
 
@@ -248,11 +249,17 @@ function thumb_list() {
 	$INC_DIR = $_SERVER["DOCUMENT_ROOT"]. "/ImageOne/";
 	try    {
 
+		/* page limits and limit offset */
+		default_limits();
+				
 		/*** The sql statement ***/
-		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images";
+		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images LIMIT :offset,:count";
 
 		/*** prepare the sql ***/
 		$stmt = $db->prepare($query);
+		
+		$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
+		$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
 
 		/*** exceute the query ***/
 		$stmt->execute();
@@ -261,7 +268,7 @@ function thumb_list() {
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 
 		$result = $stmt->fetchAll();
-
+		
 		return ($result);
 	}
 	catch(PDOException $e)

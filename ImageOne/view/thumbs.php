@@ -7,8 +7,12 @@
   </a></p>
   </div>
 <?php endforeach;?>
+<br>
 <p><a href="?action=logout">Logout</a></p>
 <p><a href="?action=choose_upload">Upload</a></p>
 <p><a href="?action=thumbnails">Refresh</a></p>
+<p><a href="?action=next">Next</a></p>
+<p><a href="?action=prev">Previous</a></p>
+<p><a href="?action=reset">Reset</a>
 
 <?php include 'footer.php'?>
