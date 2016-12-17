@@ -1,5 +1,11 @@
 <?php include 'header.php';?>
 
+<form action="index.php" method="post">
+<input type="text" name="filter_keys" value="<?php echo $_SESSION['filter_keys']?>">
+<input type="hidden" name="action" value="set_filter_keys">
+<input type="submit" value="Filter on Keywords">
+</form>
+
 <?php foreach ($thumb_metadata as $array) : ?>
   <div class="thumb" style="width: <?php echo $array['thumb_width'];?>px; height: <?php echo $array['thumb_height'];?>px;">
   <p><a href="?action=show_image&amp;image_id=<?php echo $array['image_id'];?>&amp;which=image">

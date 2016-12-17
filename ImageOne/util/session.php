@@ -16,4 +16,11 @@ function page_down() {
 	default_limits();
 	$_SESSION['limit_offset'] = $_SESSION['limit_offset'] + $_SESSION['limit_count'];
 }
+function get_filter_keys() {
+	if (!isset($_SESSION['filter_keys'])) {
+		return NULL;
+	} else {
+		return $_SESSION['filter_keys'];
+	}
+}
 ?>

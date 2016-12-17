@@ -251,6 +251,8 @@ function thumb_list() {
 
 		/* page limits and limit offset */
 		default_limits();
+		
+		$filter_keys = get_filter_keys();
 				
 		/*** The sql statement ***/
 		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images LIMIT :offset,:count";

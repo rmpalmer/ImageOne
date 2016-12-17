@@ -76,7 +76,12 @@ if ($action == 'logout') {
 		$the_data = get_image($image_id,$which);
 		include ('view/image_page.php');
 	}
+} elseif ($action == 'set_filter_keys') {
+	$_SESSION['filter_keys'] = filter_input(INPUT_POST,"filter_keys", FILTER_SANITIZE_STRING);
+	$thumb_metadata = thumb_list();
+	include ('view/thumbs.php');
 } elseif ($action == 'thumbnails') {
+	$_SESSION['filter_keys'] = filter_input(INPUT_GET,"filter_keys", FILTER_SANITIZE_STRING);
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');
 } elseif ($action == 'reset') {
