@@ -1,5 +1,13 @@
 <?php include 'header.php';?>
 
+<table border="1px">
+<tr></tr>
+ <td>one</td>
+ <td>two</td>
+<tr></tr>
+ <td colspan="2">three</td>
+</table>
+<br>
 <form action="index.php" method="post">
 <input type="text" name="filter_keys" value="<?php echo $_SESSION['filter_keys']?>">
 <input type="hidden" name="action" value="set_filter_keys">
