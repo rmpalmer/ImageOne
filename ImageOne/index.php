@@ -78,6 +78,7 @@ if ($action == 'logout') {
 	}
 } elseif ($action == 'set_filter_keys') {
 	$_SESSION['filter_keys'] = filter_input(INPUT_POST,"filter_keys", FILTER_SANITIZE_STRING);
+	default_limits();
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');
 } elseif ($action == 'thumbnails') {

@@ -273,7 +273,6 @@ EOQ;
  				$comma = ',';
  			}
 			$query = $query . ') LIMIT :offset,:count';
-			echo $query;
 			$stmt = $db->prepare($query);
 			$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
 			$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
