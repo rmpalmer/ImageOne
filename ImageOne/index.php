@@ -85,6 +85,7 @@ if ($action == 'logout') {
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');
 } elseif ($action == 'reset') {
+	$_SESSION['filter_keys'] = NULL;
 	default_limits(true);
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');

@@ -254,14 +254,26 @@ function thumb_list() {
 		
 		$filter_keys = get_filter_keys();
 				
-		/*** The sql statement ***/
-		$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images LIMIT :offset,:count";
-
-		/*** prepare the sql ***/
-		$stmt = $db->prepare($query);
-		
-		$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
-		$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
+		if (($filter_keys == NULL) or (empty($filter_keys))) {
+			$query = "SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM images LIMIT :offset,:count";
+			$stmt = $db->prepare($query);		
+			$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
+			$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
+		}
+		else {
+            $query = <<<EOQ
+SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM 
+images i INNER JOIN describes d ON i.image_id = d.images_image_id INNER JOIN keywords k ON d.keywords_idkeywords = k.idkeywords
+WHERE k.word in (
+EOQ;
+            $comma = "";
+			$filter_array = explode(" ",$filter_keys);
+			$query = $query . $db->quote($filter_array[0]);
+			$query = $query . ') LIMIT :offset,:count';
+			$stmt = $db->prepare($query);
+			$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
+			$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
+		}
 
 		/*** exceute the query ***/
 		$stmt->execute();
