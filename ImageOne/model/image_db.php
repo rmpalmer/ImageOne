@@ -264,12 +264,16 @@ function thumb_list() {
             $query = <<<EOQ
 SELECT image_id, thumb_height, thumb_width, image_type, image_name FROM 
 images i INNER JOIN describes d ON i.image_id = d.images_image_id INNER JOIN keywords k ON d.keywords_idkeywords = k.idkeywords
-WHERE k.word in (
+WHERE k.word IN (
 EOQ;
-            $comma = "";
-			$filter_array = explode(" ",$filter_keys);
-			$query = $query . $db->quote($filter_array[0]);
+ 			$filter_array = explode(" ",$filter_keys);
+            $comma = '';
+ 			foreach ($filter_array as $filter_word) {
+ 				$query = $query . $comma . $db->quote(trim($filter_word));
+ 				$comma = ',';
+ 			}
 			$query = $query . ') LIMIT :offset,:count';
+			echo $query;
 			$stmt = $db->prepare($query);
 			$stmt->bindValue(':offset',$_SESSION['limit_offset'],PDO::PARAM_INT);
 			$stmt->bindValue(':count',$_SESSION['limit_count'],PDO::PARAM_INT);
