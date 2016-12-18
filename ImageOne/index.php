@@ -81,6 +81,10 @@ if ($action == 'logout') {
 	default_limits(true);
 	$thumb_metadata = thumb_list();
 	include ('view/thumbs.php');
+} elseif ($action == 'set_batch_size') {
+	$_SESSION['limit_count'] = filter_input(INPUT_POST,"batch_size", FILTER_VALIDATE_INT);
+	$thumb_metadata = thumb_list();
+	include ('view/thumbs.php');
 } elseif ($action == 'thumbnails') {
 	$_SESSION['filter_keys'] = filter_input(INPUT_GET,"filter_keys", FILTER_SANITIZE_STRING);
 	$thumb_metadata = thumb_list();

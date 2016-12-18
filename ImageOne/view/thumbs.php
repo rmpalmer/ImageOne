@@ -16,6 +16,15 @@
 <input type="hidden" name="action" value="next">
 </form>
 
+<form action="index.php" method="post" id="reset_form">
+<input type="hidden" name="action" value="reset">
+</form>
+
+<form action="index.php" method="post" id="refresh_form">
+<input type="hidden" name="action" value="thumbnails">
+</form>
+
+
 
 <table>
 <tr>
@@ -26,12 +35,22 @@
  <td><button type="submit" form="prev_form" value="submit">Previous</button></td>
  <td><button type="submit" form="next_form" value="submit">Next</button></td>
 </tr>
+<tr>
+ <td><button type="submit" form="reset_form" value="submit">Reset</button></td>
+ <td><button type="submit" form="refresh_form" value="submit">Refresh</button></td>
+</tr>
 </table>
 
 <form action="index.php" method="post">
 <input type="text" name="filter_keys" value="<?php echo $_SESSION['filter_keys']?>">
 <input type="hidden" name="action" value="set_filter_keys">
 <input type="submit" value="Filter on Keywords">
+</form>
+
+<form action="index.php" method="post">
+<input type="text" name="batch_size" value="<?php echo $_SESSION['limit_count']?>">
+<input type="hidden" name="action" value="set_batch_size">
+<input type="submit" value="Results per page">
 </form>
 
 <?php foreach ($thumb_metadata as $array) : ?>
@@ -42,11 +61,5 @@
   </div>
 <?php endforeach;?>
 <br>
-<p><a href="?action=logout">Logout</a></p>
-<p><a href="?action=choose_upload">Upload</a></p>
-<p><a href="?action=thumbnails">Refresh</a></p>
-<p><a href="?action=next">Next</a></p>
-<p><a href="?action=prev">Previous</a></p>
-<p><a href="?action=reset">Reset</a>
 
 <?php include 'footer.php'?>
