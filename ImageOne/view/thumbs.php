@@ -1,13 +1,33 @@
 <?php include 'header.php';?>
 
-<table border="1px">
-<tr></tr>
- <td>one</td>
- <td>two</td>
-<tr></tr>
- <td colspan="2">three</td>
+<form action="index.php" method="post" id="upload_form">
+<input type="hidden" name="action" value="choose_upload">
+</form>
+
+<form action="index.php" method="post" id="logout_form">
+<input type="hidden" name="action" value="logout">
+</form>
+
+<form action="index.php" method="post" id="prev_form">
+<input type="hidden" name="action" value="prev">
+</form>
+
+<form action="index.php" method="post" id="next_form">
+<input type="hidden" name="action" value="next">
+</form>
+
+
+<table>
+<tr>
+ <td><button type="submit" form="upload_form" value="submit">Upload</button></td>
+ <td><button type="submit" form="logout_form" value="submit">Logout</button></td>
+</tr>
+<tr>
+ <td><button type="submit" form="prev_form" value="submit">Previous</button></td>
+ <td><button type="submit" form="next_form" value="submit">Next</button></td>
+</tr>
 </table>
-<br>
+
 <form action="index.php" method="post">
 <input type="text" name="filter_keys" value="<?php echo $_SESSION['filter_keys']?>">
 <input type="hidden" name="action" value="set_filter_keys">
