@@ -4,6 +4,7 @@ include 'view/header.php'; ?>
     <h1>DEBUG</h1>
 	
 	<?php print_r($_POST);?>
+	
     
     <p> <a href="index.php">Try Again</a></p>
 </main>

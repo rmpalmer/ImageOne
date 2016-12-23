@@ -1,7 +1,7 @@
 <?php include ('header.php');?>
 	<?php
     $image_id = filter_input(INPUT_GET,"image_id", FILTER_SANITIZE_NUMBER_INT);
-    echo '<img src="view/show_image.php?image_id='.$image_id.'&which=image "/>';
+    echo '<img src="view/show_image.php?max_hw=1000&image_id='.$image_id.'&which=image "/>';
 	?>
 	<br>
 	<form action="index.php" method="post" id="edit_image_form">
